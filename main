@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Countdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://i.postimg.cc/ZqydTmQg/birthday-cake-slice-candle-happy-greeting-card-design-hand-drawn-doodles-cute-cartoon-vector-clip-ar.webp');
+            background-size: 25%;
+            text-align: center;
+            padding: 50px;
+        }
+        .countdown {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #febe00;
+        }
+        .birthday-wish {
+            font-size: 1.5rem;
+            font-weight: 550;
+            margin-top: 20px;
+            color: #3cb043;
+        }
+        .container {
+            background-color: white;
+            background-image: url('https://i.postimg.cc/SNqpyGnf/2025-02-25-232129.png');
+            background-size:50%;
+            border-radius: 30px;
+            padding: 10px;
+            position: 10% 90%;
+            box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            width: 90%;
+            max-width: 600px;
+        }
+        .title {
+            font-size: 2rem;
+            color: #ff8da1;
+        }
+        .reminder {
+            font-size: 24px;
+            font-weight: 550;
+            color: #007fff;
+            padding: 7px;
+        }
+        @media (max-width: 768px) {
+            .body {
+                padding: 10px;
+            }
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+            .title {
+                font-size: 1.8rem;
+            }
+            .countdown {
+                font-size: 2.5rem;
+            }
+            .birthday-wish {
+                font-size: 1.3rem;
+            }
+            .reminder {
+                font-size: 1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .title {
+                font-size: 1.5rem;
+            }
+            .countdown {
+                font-size: 2rem;
+            }
+            .birthday-wish {
+                font-size: 1.2rem;
+            }
+            .reminder {
+                font-size: 0.9rem;
+            }
+            .container {
+                padding: 2px;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="title" id="title">Webapp's Birthday Countdown</h1>
+        <p class="countdown" id="countdown"></p>
+        <p class="birthday-wish" id="birthdayWish"></p>
+        <p class="reminder" id="reminder"></p>
+    </div>
+
+    <script>
+        // Set the target birthday (replace with the person's actual birthday)
+        const birthday = new Date('2025-04-09'); // Format: YYYY-MM-DD
+
+        let over = false;
+
+        // Array of different birthday wishes
+        const birthdayWishes = [
+            "Webapp is cool!"
+        ];
+
+        // Function to calculate the countdown and display birthday wishes
+        function updateCountdown() {
+            const today = new Date();
+            const timeDifference = birthday - today;
+            const daysRemaining = Math.ceil(timeDifference / (1000 * 3600 * 24)); // Convert milliseconds to days
+
+            // Display the countdown
+            const countdownElement = document.getElementById('countdown');
+            const reminderElement = document.getElementById('reminder');
+            const birthdayWishElement = document.getElementById('birthdayWish')
+            if (daysRemaining > 0) {
+                countdownElement.textContent = `Hey Sunshine, it's D-${daysRemaining} to your birthday!`;
+                reminderElement.textContent = "Come back tomorrow for another birthday wish!";
+                over = false;
+            } else if (daysRemaining === 0) {
+                countdownElement.textContent = "Happy 17th anniversary of your birth!";
+                reminderElement.textContent = "";
+                birthdayWishElement.textContent = "";
+                over = true;
+            } else {
+                countdownElement.textContent = "See you next year!";
+                reminderElement.textContent = "";
+                birthdayWishElement.textContent = "";
+                over = true;
+            }
+
+            // Format today's date as YYYY-MM-DD
+            const currentDate = today.toISOString().split('T')[0];
+
+            // Get the last visited date and birthday wish from localStorage
+            const savedDate = localStorage.getItem('lastVisitedDate');
+            const savedWish = localStorage.getItem('birthdayWish');
+
+            // If today's wish is not saved yet or it's a new day
+            if (over === false) {
+                if (savedDate !== currentDate) {
+                    // Generate a new wish for the new day
+                    const randomWish = birthdayWishes[Math.floor(Math.random() * birthdayWishes.length)];
+                    const birthdayWishElement = document.getElementById('birthdayWish');
+                    birthdayWishElement.textContent = randomWish;
+
+                    // Save the new wish and current date to localStorage
+                    localStorage.setItem('birthdayWish', randomWish);
+                    localStorage.setItem('lastVisitedDate', currentDate);
+                } else {
+                    // If the wish for the day is already saved, use the saved wish
+                    const birthdayWishElement = document.getElementById('birthdayWish');
+                    birthdayWishElement.textContent = savedWish;
+                }
+            }
+        }
+
+        // Trigger the falling streamers when the page loads
+        window.onload = function () {
+            confetti({
+                particleCount: 300, // Number of confetti particles
+                angle: 90, // Spread angle in degrees (horizontal)
+                spread: 110, // Spread amount (controls how far the confetti flies)
+                origin: { x: 0.5, y: 0 }, // Start position (center top of the page)
+                colors: ['#ffdf00', '#ff8da1', '#007fff', '#3cb043'], // Colors of the confetti
+                gravity: 1, // The effect of gravity on confetti
+                ticks: 800, // Number of ticks (controls duration of confetti)
+            });
+
+            // Track page visit count
+            let visitCount = localStorage.getItem('visitCount');
+            if (!visitCount) {
+                visitCount = 0;
+            }
+            visitCount++;
+
+            // Save the visit count in localStorage
+            localStorage.setItem('visitCount', visitCount);
+
+            // Display the visit count on the console
+            console.log(visitCount);
+        };
+
+        // Update the countdown and wish every day
+        setInterval(updateCountdown, 86400000); // 86400000 ms = 1 day
+        updateCountdown(); // Initial call to update the countdown immediately
+    </script>
+
+</body>
+</html>
